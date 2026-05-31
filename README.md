@@ -1,2 +1,8 @@
-# tradefair-connect
-Online marketplace for Christ Embassy Trade Fair
+# TradeFair Connect
+
+Marketplace for Christ Embassy Trade Fair exhibitors.
+
+## Run Locally
+
+npm install
+npm start

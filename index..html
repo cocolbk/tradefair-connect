@@ -1,0 +1,541 @@
+index.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="TradeFair Connect - Buy from Christ Embassy Trade Fair without leaving home">
+  <title>TradeFair Connect | Shop Asese Trade Fair Online</title>
+  
+  <!-- 
+    LAYOUT CHOICE: Embedded CSS for single-file MVP
+    Mobile-first: Base styles for mobile, media queries for larger screens
+    Accessible: High contrast colors, semantic HTML, focus states
+  -->
+  <style>
+    /* ========== CSS VARIABLES FOR THEME ========== */
+    :root {
+      --primary-color: #2563eb;
+      --primary-dark: #1d4ed8;
+      --secondary-color: #10b981;
+      --background-light: #f8fafc;
+      --background-white: #ffffff;
+      --text-dark: #1e293b;
+      --text-light: #64748b;
+      --border-color: #e2e8f0;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      --radius: 8px;
+    }
+
+    /* ========== RESET & BASE STYLES ========== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      line-height: 1.6;
+      color: var(--text-dark);
+      background-color: var(--background-light);
+    }
+
+    /* ========== ACCESSIBILITY: FOCUS STATES ========== */
+    *:focus {
+      outline: 3px solid var(--primary-color);
+      outline-offset: 2px;
+    }
+
+    /* ========== HERO SECTION ========== */
+    /* LAYOUT CHOICE: Full-width hero with clear value proposition */
+    .hero {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+      color: var(--background-white);
+      padding: 2rem 1rem;
+      text-align: center;
+    }
+
+    .hero__logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero__title {
+      font-size: 1.75rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      line-height: 1.2;
+    }
+
+    .hero__subtitle {
+      font-size: 1rem;
+      opacity: 0.9;
+      margin-bottom: 1.5rem;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* ========== SEARCH BAR IN HERO ========== */
+    /* LAYOUT CHOICE: Prominent search for quick product discovery */
+    .hero__search {
+      display: flex;
+      gap: 0.5rem;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .hero__search-input {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      border: 2px solid transparent;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      background: var(--background-white);
+      color: var(--text-dark);
+    }
+
+    .hero__search-input::placeholder {
+      color: var(--text-light);
+    }
+
+    /* ========== BUTTON STYLES ========== */
+    /* LAYOUT CHOICE: Primary button with clear call-to-action */
+    .btn-primary {
+      background-color: var(--secondary-color);
+      color: var(--background-white);
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .btn-primary:hover {
+      background-color: #059669;
+    }
+
+    .btn-primary:active {
+      transform: scale(0.98);
+    }
+
+    /* ========== MAIN CONTENT AREA ========== */
+    /* LAYOUT CHOICE: Card-based layout for mobile scanning */
+    .main {
+      padding: 1.5rem 1rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* ========== CATEGORY FILTERS ========== */
+    .categories {
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding-bottom: 1rem;
+      margin-bottom: 1.5rem;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .category-chip {
+      background: var(--background-white);
+      border: 1px solid var(--border-color);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.875rem;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+.category-chip--active {
+      background: var(--primary-color);
+      color: var(--background-white);
+      border-color: var(--primary-color);
+    }
+
+    /* ========== PRODUCT LIST ========== */
+    /* LAYOUT CHOICE: Grid adapts from 1 column (mobile) to 3 (desktop) */
+    #list-root {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    @media (min-width: 640px) {
+      #list-root {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      #list-root {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    /* ========== PRODUCT CARD ========== */
+    .product-card {
+      background: var(--background-white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transition: transform 0.2s ease;
+    }
+
+    .product-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .product-card__image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      background-color: var(--border-color);
+    }
+
+    .product-card__content {
+      padding: 1rem;
+    }
+
+    .product-card__title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--text-dark);
+    }
+
+    .product-card__seller {
+      font-size: 0.875rem;
+      color: var(--text-light);
+      margin-bottom: 0.5rem;
+    }
+
+    .product-card__price {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+    }
+
+    .product-card__actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .btn-secondary {
+      flex: 1;
+      background-color: transparent;
+      color: var(--primary-color);
+      border: 2px solid var(--primary-color);
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--primary-color);
+      color: var(--background-white);
+    }
+
+    /* ========== INSIGHTS PANEL ========== */
+    /* LAYOUT CHOICE: Sticky panel for currency conversion & quick stats */
+    #insights-panel {
+      background: var(--background-white);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border-color);
+    }
+
+    #insights-panel h2 {
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+      color: var(--text-dark);
+    }
+
+    .currency-converter {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 0.5rem;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .currency-input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      font-size: 1rem;
+    }
+
+    .currency-symbol {
+      font-weight: 700;
+      color: var(--text-light);
+      text-align: center;
+    }
+
+    .trade-fair-info {
+      background: var(--background-light);
+      padding: 1rem;
+      border-radius: var(--radius);
+      margin-top: 1rem;
+    }
+
+    .trade-fair-info h3 {
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+      color: var(--primary-color);
+    }
+
+    .trade-fair-info p {
+      font-size: 0.875rem;
+      color: var(--text-light);
+    }
+
+    /* ========== FOOTER ========== */
+    /* LAYOUT CHOICE: Simple footer with essential links */
+    .footer {
+      background: var(--text-dark);
+      color: var(--background-white);
+      padding: 2rem 1rem;
+      margin-top: 2rem;
+    }
+
+    .footer__content {
+      max-width: 1200px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .footer__links {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .footer__link {
+      color: var(--background-white);
+      text-decoration: none;
+      font-size: 0.875rem;
+      opacity: 0.8;
+      transition: opacity 0.2s ease;
+    }
+     .footer__link:hover {
+      opacity: 1;
+    }
+
+    .footer__copyright {
+      font-size: 0.75rem;
+      opacity: 0.6;
+    }
+
+    /* ========== UTILITY CLASSES ========== */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+
+    /* ========== MOBILE OPTIMIZATIONS ========== */
+    @media (max-width: 480px) {
+      .hero__title {
+        font-size: 1.5rem;
+      }
+
+      .hero__search {
+        flex-direction: column;
+      }
+
+      .currency-converter {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- ========== HERO SECTION ========== -->
+  <!-- LAYOUT CHOICE: Clear value prop above the fold with search -->
+  <header class="hero" role="banner">
+    <div class="hero__logo">🛒 TradeFair Connect</div>
+    <h1 class="hero__title">Shop Christ Embassy Trade Fair from Home</h1>
+    <p class="hero__subtitle">Order from Asese Trade Fair exhibitors and get delivery to your doorstep in Lagos. Pay securely with Espees.</p>
+    
+    <!-- Search form with accessible labels -->
+    <form class="hero__search" role="search" aria-label="Product search">
+      <label for="search-input" class="sr-only">Search products</label>
+      <input 
+        type="search" 
+        id="search-input" 
+        class="hero__search-input" 
+        placeholder="Search products, sellers, categories..."
+        aria-describedby="search-help"
+      >
+      <button type="submit" id="btn-primary" class="btn-primary">Search</button>
+    </form>
+    <span id="search-help" class="sr-only">Enter product name to search available items</span>
+  </header>
+
+  <!-- ========== MAIN CONTENT ========== -->
+  <!-- LAYOUT CHOICE: Semantic main element for primary content -->
+  <main class="main" role="main">
+    
+    <!-- ========== CATEGORY FILTERS ========== -->
+    <!-- LAYOUT CHOICE: Horizontal scroll for mobile, easy category switching -->
+    <nav class="categories" aria-label="Product categories">
+      <button class="category-chip category-chip--active" data-category="all">All Items</button>
+      <button class="category-chip" data-category="foods">Foods</button>
+      <button class="category-chip" data-category="fabrics">Fabrics</button>
+      <button class="category-chip" data-category="books">Books</button>
+      <button class="category-chip" data-category="accessories">Accessories</button>
+      <button class="category-chip" data-category="home">Home & Living</button>
+    </nav>
+
+    <!-- ========== INSIGHTS PANEL ========== -->
+    <!-- LAYOUT CHOICE: Currency converter & trade fair info for context -->
+    <section id="insights-panel" aria-labelledby="insights-heading">
+      <h2 id="insights-heading">💱 Currency Converter</h2>
+      <form class="currency-converter" aria-label="Currency conversion">
+        <div>
+          <label for="naira-amount" class="sr-only">Amount in Naira</label>
+          <input 
+            type="number" 
+            id="naira-amount" 
+            class="currency-input" 
+            placeholder="₦ Amount"
+            min="0"
+            step="0.01"
+          >
+        </div>
+        <span class="currency-symbol">⇄</span>
+        <div>
+          <label for="espees-amount" class="sr-only">Amount in Espees</label>
+          <input 
+            type="number" 
+            id="espees-amount" 
+            class="currency-input" 
+            placeholder="ESP Amount"
+            min="0"
+            step="0.01"
+            readonly
+          >
+        </div>
+      </form>
+
+      <div class="trade-fair-info">
+        <h3>📍 Next Trade Fair</h3>
+        <p><strong>Location:</strong> Christ Embassy, Asese</p>
+        <p><strong>Delivery:</strong> Available to Ikeja, VI, Lekki & all Lagos</p>
+        <p><strong>Payment:</strong> Secure Espees transactions</p>
+      </div>
+    </section>
+ <!-- ========== PRODUCT LIST ========== -->
+    <!-- LAYOUT CHOICE: Grid layout for product cards, responsive columns -->
+    <section aria-labelledby="products-heading">
+      <h2 id="products-heading" class="sr-only">Available Products</h2>
+      <div id="list-root" role="list" aria-label="Product listings">
+        <!-- Product Card 1 -->
+        <article class="product-card" role="listitem">
+          <img 
+            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect fill='%23e2e8f0' width='400' height='200'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%2364748b' font-family='sans-serif' font-size='16'%3EProduct Image%3C/text%3E%3C/svg%3E" 
+            alt="Premium Ankara Fabric - Blue Pattern" 
+            class="product-card__image"
+            loading="lazy"
+          >
+          <div class="product-card__content">
+            <h3 class="product-card__title">Premium Ankara Fabric - Blue Pattern</h3>
+            <p class="product-card__seller">🏪 Grace Fabrics Ltd</p>
+            <p class="product-card__price">₦25,000</p>
+            <div class="product-card__actions">
+              <button class="btn-secondary" data-product-id="1">Add to Cart</button>
+              <button class="btn-secondary" data-product-id="1">View Details</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Product Card 2 -->
+        <article class="product-card" role="listitem">
+          <img 
+            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect fill='%23e2e8f0' width='400' height='200'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%2364748b' font-family='sans-serif' font-size='16'%3EProduct Image%3C/text%3E%3C/svg%3E" 
+            alt="Rhapsody of Realities - 2026 Edition" 
+            class="product-card__image"
+            loading="lazy"
+          >
+          <div class="product-card__content">
+            <h3 class="product-card__title">Rhapsody of Realities - 2026 Edition</h3>
+            <p class="product-card__seller">🏪 Loveworld Books</p>
+            <p class="product-card__price">₦3,500</p>
+            <div class="product-card__actions">
+              <button class="btn-secondary" data-product-id="2">Add to Cart</button>
+              <button class="btn-secondary" data-product-id="2">View Details</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Product Card 3 -->
+        <article class="product-card" role="listitem">
+          <img 
+            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect fill='%23e2e8f0' width='400' height='200'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%2364748b' font-family='sans-serif' font-size='16'%3EProduct Image%3C/text%3E%3C/svg%3E" 
+            alt="Organic Honey - 500ml" 
+            class="product-card__image"
+            loading="lazy"
+          >
+          <div class="product-card__content">
+            <h3 class="product-card__title">Organic Honey - 500ml</h3>
+            <p class="product-card__seller">🏪 Pure Foods Nigeria</p>
+            <p class="product-card__price">₦8,000</p>
+            <div class="product-card__actions">
+              <button class="btn-secondary" data-product-id="3">Add to Cart</button>
+              <button class="btn-secondary" data-product-id="3">View Details</button>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ========== LOAD MORE BUTTON ========== -->
+    <!-- LAYOUT CHOICE: Clear CTA to load more products without pagination -->
+    <div style="text-align: center; margin-top: 2rem;">
+      <button class="btn-primary" id="load-more-btn">Load More Products</button>
+    </div>
+  </main>
+<!-- ========== FOOTER ========== -->
+  <!-- LAYOUT CHOICE: Simple footer with essential navigation links -->
+  <footer class="footer" role="contentinfo">
+    <div class="footer__content">
+      <nav class="footer__links" aria-label="Footer navigation">
+        <a href="#about" class="footer__link">About Us</a>
+        <a href="#sellers" class="footer__link">Become a Seller</a>
+        <a href="#delivery" class="footer__link">Delivery Info</a>
+        <a href="#contact" class="footer__link">Contact</a>
+        <a href="#privacy" class="footer__link">Privacy Policy</a>
+      </nav>
+      <p class="footer__copyright">© 2026 TradeFair Connect. Built with excellence for Christ Embassy Community.</p>
+      <p class="footer__copyright">💜 Powered by EdenHub.io</p>
+    </div>
+  </footer>
+
+  <!-- ========== JAVASCRIPT LINK ========== -->
+  <!-- LAYOUT CHOICE: Script at bottom for faster page load -->
+  <script src="app.js"></script>
+</body>
+</html>
+
+ 
